@@ -1,4 +1,5 @@
 import argparse
+import datetime
 import yaml
 from pathlib import Path
 
@@ -9,16 +10,17 @@ from problem_loader import ProblemSetLoader
 
 def main():
     parser = argparse.ArgumentParser(description='Test LLMs on Bayesian Optimization problem set')
-    parser.add_argument("--llm", type=str, choices=["gpt", "gemini", "claude", "deepseek", "qwen"], default="qwen3", help="LLM name to test.")
-    parser.add_argument('--experiment', choices=['100', '24'], required=True, help='Experiment type: 100-problem or 24-problem')
-    parser.add_argument('--problems', default='problem_set/', help='Path to problem set directory')
-    parser.add_argument('--output', default='results/', help='Output directory for results')
-    parser.add_argument('--max-files', type=int, help='Maximum number of files to test (for debugging)')
+    parser.add_argument('-l', '--llm', type=str, choices=["gpt", "gemini", "claude", "deepseek", "qwen"], default="qwen3", help="LLM name to test.")
+    parser.add_argument('-e', '--experiment', choices=['100', '24'], required=True, help='Experiment type: 100-problem or 24-problem')
+    parser.add_argument('-p', '--problems', default='problem_set/', help='Path to problem set directory')
+    parser.add_argument('-o', '--output', default='results/', help='Output directory for results')
+    parser.add_argument('-m', '--max-files', type=int, help='Maximum number of files to test (for debugging)')
 
     args = parser.parse_args()
     
     # Create output directory
-    output_dir = Path(args.output)
+    timestamp = datetime.datetime.now().strftime("%m%d%H%M%S")
+    output_dir = Path(args.output) / timestamp
     output_dir.mkdir(exist_ok=True)
     
     # Initialize LLM tester and problem loader
@@ -64,9 +66,14 @@ Please provide detailed step-by-step solutions for each problem following the sa
         results.append(result)
         
         print(f"✓ Completed problem file {i}")
-    
+
+        # Save single result
+        output_file = output_dir / f"{args.experiment}problems_{timestamp}_{args.llm.replace(':', '_')}_{i}_result.yaml"
+        with open(output_file, 'w') as f:
+            yaml.dump([result], f, default_flow_style=False, indent=2)
+
     # Save results
-    output_file = output_dir / f"{args.llm.replace(':', '_')}_{args.experiment}problems_results.yaml"
+    output_file = output_dir / f"{args.experiment}problems_{timestamp}_{args.llm.replace(':', '_')}_all_results.yaml"
     with open(output_file, 'w') as f:
         yaml.dump(results, f, default_flow_style=False, indent=2)
     
