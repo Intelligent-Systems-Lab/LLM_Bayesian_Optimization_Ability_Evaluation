@@ -11,8 +11,8 @@ from problem_loader import ProblemSetLoader
 def main():
     parser = argparse.ArgumentParser(description='Test LLMs on Bayesian Optimization problem set')
     parser.add_argument('-l', '--llm', type=str, choices=["gpt", "gemini", "claude", "deepseek", "qwen"], default="qwen3", help="LLM name to test.")
-    parser.add_argument('-e', '--experiment', choices=['100', '24'], required=True, help='Experiment type: 100-problem or 24-problem')
-    parser.add_argument('-p', '--problems', default='problem_set/', help='Path to problem set directory')
+    parser.add_argument('-e', '--experiment', choices=['100', '24', '5'], required=True, help='Experiment type: 100-problem, 24-problem, or 5-problem')
+    parser.add_argument('-p', '--problems', default='problem_set/100problems', help='Path to problem set directory')
     parser.add_argument('-o', '--output', default='results/', help='Output directory for results')
     parser.add_argument('-m', '--max-files', type=int, help='Maximum number of files to test (for debugging)')
 
@@ -31,6 +31,10 @@ def main():
     # Setup LLM
     print(f"Setting up LLM: {args.llm}")
     
+    # Load introduction
+    print("Loading introduction...")
+    introduction = problem_loader.load_introduction()
+    
     # Load problem files
     print(f"Loading {args.experiment}-problem experiment files...")
     problem_files = problem_loader.load_problem_files(args.experiment)
@@ -45,12 +49,17 @@ def main():
     for i, problem_file in enumerate(problem_files, 1):
         print(f"Testing problem file {i}/{len(problem_files)}: {problem_file['filename']}")
         
-        # Create prompt with the entire file content
-        prompt = f"""Please solve all the Bayesian Optimization problems in this problem set step by step:
+        # Create prompt with introduction followed by the problem content
+        prompt = f"""Please solve the Bayesian Optimization problems step by step:
+
+{introduction}
+
+---
 
 {problem_file['content']}
 
-Please provide detailed step-by-step solutions for each problem following the same format as shown in the examples."""
+Please solve this Bayesian Optimization problem step by step following the same format as shown in the examples above.
+"""
         
         # Generate response
         response = llm_tester.generate_response(prompt)
@@ -59,6 +68,7 @@ Please provide detailed step-by-step solutions for each problem following the sa
         result = {
             'problem_file': problem_file['filename'],
             'experiment_type': args.experiment,
+            'introduction': introduction,
             'file_content': problem_file['content'],
             'llm_response': response,
             'llm_name': args.llm
