@@ -87,58 +87,42 @@ class ProblemSetLoader:
         """Initialize problem set loader."""
         self.problem_dir = Path(problem_dir)
         
-    def load_all_problems(self) -> List[Dict[str, Any]]:
-        """Load all problems from markdown files."""
-        problem_files = sorted(glob.glob(str(self.problem_dir / "*.md")))
-        all_problems = []
+    def load_problem_files(self, experiment_type: str) -> List[str]:
+        """Load problem files as strings based on experiment type."""
+        if experiment_type == "100":
+            pattern = "*100*part*.md"
+        elif experiment_type == "24":
+            pattern = "*24*part*.md"
+        else:
+            raise ValueError(f"Invalid experiment type: {experiment_type}. Use '100' or '24'.")
         
+        # Find matching files
+        problem_files = sorted(glob.glob(str(self.problem_dir / pattern)))
+        
+        if not problem_files:
+            raise FileNotFoundError(f"No problem files found matching pattern: {pattern}")
+        
+        # Load file contents as strings
+        problem_contents = []
         for file_path in problem_files:
-            problems = self.parse_markdown_file(file_path)
-            all_problems.extend(problems)
-            
-        return all_problems
-    
-    def parse_markdown_file(self, file_path: str) -> List[Dict[str, Any]]:
-        """Parse a single markdown file and extract problems."""
-        with open(file_path, 'r') as f:
-            content = f.read()
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+                problem_contents.append({
+                    'filename': os.path.basename(file_path),
+                    'content': content
+                })
         
-        problems = []
-        # Split by question markers (## Q1, ## Q2, etc.)
-        question_sections = re.split(r'\n## Q(\d+)\.', content)
-        
-        if len(question_sections) > 1:
-            for i in range(1, len(question_sections), 2):
-                if i + 1 < len(question_sections):
-                    question_num = question_sections[i]
-                    question_content = question_sections[i + 1]
-                    
-                    # Extract the problem part (before **Answer**)
-                    problem_match = re.search(r'^(.*?)\*\*Answer', question_content, re.DOTALL)
-                    if problem_match:
-                        problem_text = problem_match.group(1).strip()
-                        
-                        # Extract the answer part
-                        answer_match = re.search(r'\*\*Answer[^:]*:\*\*(.*?)(?=\n---|\Z)', question_content, re.DOTALL)
-                        answer_text = answer_match.group(1).strip() if answer_match else ""
-                        
-                        problems.append({
-                            'file': os.path.basename(file_path),
-                            'question_num': int(question_num),
-                            'problem': problem_text,
-                            'answer': answer_text
-                        })
-        
-        return problems
+        return problem_contents
 
 
 def main():
     parser = argparse.ArgumentParser(description='Test LLMs on Bayesian Optimization problem set')
     parser.add_argument('--llm', required=True, help='LLM name to test (e.g., o4-mini, gemini-2.5-pro, claude-3-5-sonnet-20241022)')
+    parser.add_argument('--experiment', choices=['100', '24'], required=True, help='Experiment type: 100-problem or 24-problem')
     parser.add_argument('--config', default='llm_config_key.yaml', help='Path to LLM configuration file')
     parser.add_argument('--problems', default='problem_set/', help='Path to problem set directory')
     parser.add_argument('--output', default='results/', help='Output directory for results')
-    parser.add_argument('--max-problems', type=int, help='Maximum number of problems to test (for debugging)')
+    parser.add_argument('--max-files', type=int, help='Maximum number of files to test (for debugging)')
     
     args = parser.parse_args()
     
@@ -154,51 +138,49 @@ def main():
     print(f"Setting up LLM: {args.llm}")
     llm_tester.setup_llm(args.llm)
     
-    # Load all problems
-    print("Loading problem set...")
-    all_problems = problem_loader.load_all_problems()
+    # Load problem files
+    print(f"Loading {args.experiment}-problem experiment files...")
+    problem_files = problem_loader.load_problem_files(args.experiment)
     
-    if args.max_problems:
-        all_problems = all_problems[:args.max_problems]
+    if args.max_files:
+        problem_files = problem_files[:args.max_files]
     
-    print(f"Found {len(all_problems)} problems to test")
+    print(f"Found {len(problem_files)} problem files to test")
     
-    # Test each problem
+    # Test each problem file
     results = []
-    for i, problem in enumerate(all_problems, 1):
-        print(f"Testing problem {i}/{len(all_problems)} (Q{problem['question_num']} from {problem['file']})")
+    for i, problem_file in enumerate(problem_files, 1):
+        print(f"Testing problem file {i}/{len(problem_files)}: {problem_file['filename']}")
         
-        # Create prompt
-        prompt = f"""Please solve this Bayesian Optimization problem step by step:
+        # Create prompt with the entire file content
+        prompt = f"""Please solve all the Bayesian Optimization problems in this problem set step by step:
 
-{problem['problem']}
+{problem_file['content']}
 
-Please provide a detailed step-by-step solution following the same format as shown in the examples."""
+Please provide detailed step-by-step solutions for each problem following the same format as shown in the examples."""
         
         # Generate response
         response = llm_tester.generate_response(prompt)
         
         # Store result
         result = {
-            'problem_id': f"{problem['file']}_Q{problem['question_num']}",
-            'file': problem['file'],
-            'question_num': problem['question_num'],
-            'problem': problem['problem'],
-            'expected_answer': problem['answer'],
+            'problem_file': problem_file['filename'],
+            'experiment_type': args.experiment,
+            'file_content': problem_file['content'],
             'llm_response': response,
             'llm_name': args.llm
         }
         results.append(result)
         
-        print(f"✓ Completed problem {i}")
+        print(f"✓ Completed problem file {i}")
     
     # Save results
-    output_file = output_dir / f"{args.llm.replace(':', '_')}_results.yaml"
+    output_file = output_dir / f"{args.llm.replace(':', '_')}_{args.experiment}problems_results.yaml"
     with open(output_file, 'w') as f:
         yaml.dump(results, f, default_flow_style=False, indent=2)
     
     print(f"\nTesting completed! Results saved to: {output_file}")
-    print(f"Total problems tested: {len(results)}")
+    print(f"Total problem files tested: {len(results)}")
 
 
 if __name__ == "__main__":
