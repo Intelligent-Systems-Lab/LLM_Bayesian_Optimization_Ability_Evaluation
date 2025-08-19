@@ -4,15 +4,15 @@ import yaml
 from pathlib import Path
 
 from llm_configs import LLM_MAPPING
-from llm_system_prompt import bo_calculation_system_prompt
+from llm_tester_system_prompt import bo_calculation_system_prompt
 from llm_tester import LLMTester
 from problem_loader import ProblemSetLoader
 
 def main():
     parser = argparse.ArgumentParser(description='Test LLMs on Bayesian Optimization problem set')
     parser.add_argument('-l', '--llm', type=str, choices=["gpt", "gemini", "claude", "deepseek", "qwen"], default="qwen3", help="LLM name to test.")
-    parser.add_argument('-e', '--experiment', choices=['100', '24', '5'], required=True, help='Experiment type: 100-problem, 24-problem, or 5-problem')
-    parser.add_argument('-p', '--problems', default='problem_set/100problems', help='Path to problem set directory')
+    parser.add_argument('-e', '--experiment', default=24, choices=['100', '24'], help='Experiment type: 100-problem, 24-problem, or 5-problem')
+    parser.add_argument('-p', '--problems', default='problem_set/24problems', help='Path to problem set directory')
     parser.add_argument('-o', '--output', default='results/', help='Output directory for results')
     parser.add_argument('-m', '--max-files', type=int, help='Maximum number of files to test (for debugging)')
 
