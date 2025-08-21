@@ -1,0 +1,240 @@
+Q1: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3702], [0.78, 1.0004, 0.78], [0.3702, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0348,\
+  \ -5.0543, 2.4477], [-5.0543, 8.8806, -5.0536], [2.4477, -5.0536, 4.034]]\n   -\
+  \ α = K⁻¹y: [1.0122, -1.0825, 1.0146]; f*=0.4980\n3) EI on candidates:\n   - lr=0.004000,\
+  \ wd=0.00000, drop=0.15: μ=0.5056, σ=0.0622, z=-0.123, EI=0.02118\n   - lr=0.006000,\
+  \ wd=0.00210, drop=0.25: μ=0.5038, σ=0.0677, z=-0.085, EI=0.02422\n   - lr=0.008000,\
+  \ wd=0.00610, drop=0.35: μ=0.5234, σ=0.1787, z=-0.142, EI=0.05930\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q10: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3702], [0.78, 1.0004, 0.78], [0.3702, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0348,\
+  \ -5.0543, 2.4477], [-5.0543, 8.8805, -5.0536], [2.4477, -5.0536, 4.034]]\n   -\
+  \ α = K⁻¹y: [1.0016, -1.051, 0.992]; f*=0.5036\n3) EI on candidates:\n   - lr=0.001600,\
+  \ wd=0.00000, drop=0.25: μ=0.5122, σ=0.0622, z=-0.139, EI=0.02072\n   - lr=0.002400,\
+  \ wd=0.00200, drop=0.35: μ=0.5077, σ=0.0677, z=-0.060, EI=0.02503\n   - lr=0.003200,\
+  \ wd=0.00600, drop=0.45: μ=0.5235, σ=0.1787, z=-0.111, EI=0.06179\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q11: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3701], [0.78, 1.0004, 0.78], [0.3701, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0342,\
+  \ -5.0536, 2.4477], [-5.0536, 8.8797, -5.0536], [2.4477, -5.0536, 4.0342]]\n   -\
+  \ α = K⁻¹y: [1.0181, -1.0887, 1.0194]; f*=0.5000\n3) EI on candidates:\n   - lr=0.000024,\
+  \ wd=0.00700, drop=0.05: μ=0.5078, σ=0.0622, z=-0.126, EI=0.02111\n   - lr=0.000036,\
+  \ wd=0.01200, drop=0.15: μ=0.5057, σ=0.0677, z=-0.084, EI=0.02426\n   - lr=0.000048,\
+  \ wd=0.01600, drop=0.25: μ=0.5253, σ=0.1787, z=-0.141, EI=0.05935\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q12: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3701], [0.78, 1.0004, 0.78], [0.3701, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0342,\
+  \ -5.0536, 2.4477], [-5.0536, 8.8797, -5.0536], [2.4477, -5.0536, 4.0342]]\n   -\
+  \ α = K⁻¹y: [1.0436, -1.1227, 1.0328]; f*=0.4964\n3) EI on candidates:\n   - lr=0.000160,\
+  \ wd=0.01700, drop=0.05: μ=0.5063, σ=0.0622, z=-0.159, EI=0.02019\n   - lr=0.000240,\
+  \ wd=0.02200, drop=0.15: μ=0.5011, σ=0.0677, z=-0.070, EI=0.02470\n   - lr=0.000320,\
+  \ wd=0.02600, drop=0.25: μ=0.5210, σ=0.1787, z=-0.138, EI=0.05966\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q13: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q14: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q15: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q16: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q17: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q18: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q19: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q2: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3702], [0.78, 1.0004, 0.78], [0.3702, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0348,\
+  \ -5.0543, 2.4477], [-5.0543, 8.8806, -5.0536], [2.4477, -5.0536, 4.034]]\n   -\
+  \ α = K⁻¹y: [1.018, -1.0874, 1.0203]; f*=0.5020\n3) EI on candidates:\n   - lr=0.080000,\
+  \ wd=0.00000, drop=0.15: μ=0.5096, σ=0.0622, z=-0.123, EI=0.02117\n   - lr=0.120000,\
+  \ wd=0.00210, drop=0.25: μ=0.5078, σ=0.0677, z=-0.085, EI=0.02422\n   - lr=0.160000,\
+  \ wd=0.00610, drop=0.35: μ=0.5274, σ=0.1787, z=-0.142, EI=0.05932\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q20: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q21: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q22: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q23: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q24: '1) Categorical variables present ⇒ **TPE**.
+
+  2) Split by γ=0.33 into **good**/**bad** sets (lower loss is better).
+
+  3) Build l(x) from **good** and g(x) from **bad** using: Laplace-smoothed masses
+  for {architecture, optimizer, fed_agg}, and KDEs for {lr, batch, epochs} (+ mu for
+  fedprox).
+
+  4) Compute l/g per candidate and pick **argmax**.
+
+  ---'
+Q3: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3702], [0.78, 1.0004, 0.78], [0.3702, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0348,\
+  \ -5.0543, 2.4477], [-5.0543, 8.8806, -5.0536], [2.4477, -5.0536, 4.034]]\n   -\
+  \ α = K⁻¹y: [1.0128, -1.083, 1.0152]; f*=0.4984\n3) EI on candidates:\n   - lr=0.080000,\
+  \ wd=0.00000, drop=0.15: μ=0.5060, σ=0.0622, z=-0.123, EI=0.02118\n   - lr=0.120000,\
+  \ wd=0.00210, drop=0.25: μ=0.5042, σ=0.0677, z=-0.085, EI=0.02422\n   - lr=0.160000,\
+  \ wd=0.00610, drop=0.35: μ=0.5238, σ=0.1787, z=-0.142, EI=0.05930\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q4: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3702], [0.78, 1.0004, 0.78], [0.3702, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0348,\
+  \ -5.0543, 2.4477], [-5.0543, 8.8806, -5.0536], [2.4477, -5.0536, 4.034]]\n   -\
+  \ α = K⁻¹y: [1.0185, -1.0879, 1.0209]; f*=0.5024\n3) EI on candidates:\n   - lr=0.080000,\
+  \ wd=0.00000, drop=0.25: μ=0.5100, σ=0.0622, z=-0.123, EI=0.02117\n   - lr=0.120000,\
+  \ wd=0.00210, drop=0.35: μ=0.5082, σ=0.0677, z=-0.085, EI=0.02422\n   - lr=0.160000,\
+  \ wd=0.00610, drop=0.45: μ=0.5278, σ=0.1787, z=-0.142, EI=0.05932\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q5: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3702], [0.78, 1.0004, 0.78], [0.3702, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0348,\
+  \ -5.0543, 2.4477], [-5.0543, 8.8805, -5.0536], [2.4477, -5.0536, 4.034]]\n   -\
+  \ α = K⁻¹y: [1.0134, -1.0835, 1.0158]; f*=0.4988\n3) EI on candidates:\n   - lr=0.001600,\
+  \ wd=0.00000, drop=0.25: μ=0.5064, σ=0.0622, z=-0.123, EI=0.02118\n   - lr=0.002400,\
+  \ wd=0.00200, drop=0.35: μ=0.5046, σ=0.0677, z=-0.085, EI=0.02422\n   - lr=0.003200,\
+  \ wd=0.00600, drop=0.45: μ=0.5242, σ=0.1787, z=-0.142, EI=0.05931\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q6: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3701], [0.78, 1.0004, 0.78], [0.3701, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0342,\
+  \ -5.0536, 2.4477], [-5.0536, 8.8797, -5.0536], [2.4477, -5.0536, 4.0342]]\n   -\
+  \ α = K⁻¹y: [1.0221, -1.0922, 1.0234]; f*=0.5028\n3) EI on candidates:\n   - lr=0.000024,\
+  \ wd=0.00700, drop=0.05: μ=0.5106, σ=0.0622, z=-0.126, EI=0.02111\n   - lr=0.000036,\
+  \ wd=0.01200, drop=0.15: μ=0.5085, σ=0.0677, z=-0.084, EI=0.02426\n   - lr=0.000048,\
+  \ wd=0.01600, drop=0.25: μ=0.5280, σ=0.1787, z=-0.141, EI=0.05936\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q7: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3701], [0.78, 1.0004, 0.78], [0.3701, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0342,\
+  \ -5.0536, 2.4477], [-5.0536, 8.8797, -5.0536], [2.4477, -5.0536, 4.0342]]\n   -\
+  \ α = K⁻¹y: [1.017, -1.0878, 1.0182]; f*=0.4992\n3) EI on candidates:\n   - lr=0.000160,\
+  \ wd=0.01700, drop=0.05: μ=0.5070, σ=0.0622, z=-0.126, EI=0.02111\n   - lr=0.000240,\
+  \ wd=0.02200, drop=0.15: μ=0.5049, σ=0.0677, z=-0.084, EI=0.02426\n   - lr=0.000320,\
+  \ wd=0.02600, drop=0.25: μ=0.5245, σ=0.1787, z=-0.141, EI=0.05935\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q8: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3702], [0.78, 1.0004, 0.78], [0.3702, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0348,\
+  \ -5.0543, 2.4477], [-5.0543, 8.8806, -5.0536], [2.4477, -5.0536, 4.034]]\n   -\
+  \ α = K⁻¹y: [1.0197, -1.0889, 1.022]; f*=0.5032\n3) EI on candidates:\n   - lr=0.080000,\
+  \ wd=0.00000, drop=0.15: μ=0.5108, σ=0.0622, z=-0.123, EI=0.02117\n   - lr=0.120000,\
+  \ wd=0.00210, drop=0.25: μ=0.5090, σ=0.0677, z=-0.085, EI=0.02422\n   - lr=0.160000,\
+  \ wd=0.00610, drop=0.35: μ=0.5285, σ=0.1787, z=-0.142, EI=0.05932\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
+Q9: "1) All dims are continuous ⇒ **GP**.\n2) Fit GP on inputs `[log10(lr), wd, dropout]`\
+  \ with RBF kernel (ℓ=0.45, σ_f²=1, σ_n²=0.02).\n   - K (rounded): [[1.0004, 0.78,\
+  \ 0.3702], [0.78, 1.0004, 0.78], [0.3702, 0.78, 1.0004]]\n   - K⁻¹ (rounded): [[4.0348,\
+  \ -5.0543, 2.4477], [-5.0543, 8.8806, -5.0536], [2.4477, -5.0536, 4.034]]\n   -\
+  \ α = K⁻¹y: [1.0145, -1.0845, 1.0169]; f*=0.4996\n3) EI on candidates:\n   - lr=0.080000,\
+  \ wd=0.00000, drop=0.15: μ=0.5072, σ=0.0622, z=-0.123, EI=0.02118\n   - lr=0.120000,\
+  \ wd=0.00210, drop=0.25: μ=0.5054, σ=0.0677, z=-0.085, EI=0.02422\n   - lr=0.160000,\
+  \ wd=0.00610, drop=0.35: μ=0.5250, σ=0.1787, z=-0.142, EI=0.05931\n4) **Recommend**\
+  \ the argmax-EI candidate.\n---"
