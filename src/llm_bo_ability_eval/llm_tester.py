@@ -54,6 +54,15 @@ class LLMTester:
                     messages=[{"role": "user", "content": prompt}]
                 )
                 return msg.content[0].text
+            elif 'o4-mini' in llm_name.lower():  # OpenAI-compatible APIs (o4-mini does not support max tokens)
+                completion = self.client.chat.completions.create(
+                    model=llm_name,
+                    messages=[
+                        {"role": "system", "content": self.system_prompt},
+                        {"role": "user", "content": prompt}
+                    ],
+                )
+                return completion.choices[0].message.content
             else:  # OpenAI-compatible APIs (GPT, DeepSeek, Qwen, etc.)
                 completion = self.client.chat.completions.create(
                     model=llm_name,

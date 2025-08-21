@@ -56,12 +56,13 @@ cd src/llm_bo_ability_eval
 export OPENAI_API_KEY=dummy_api_key
 python main.py -l qwen -e 24
 ```
+Note: The default of `-p` is problem_set/24problems, so `-p` is needless to set here.
 
 Run all problems in the 100-problem set using Gemini:
 ```bash
 cd src/llm_bo_ability_eval
 export OPENAI_API_KEY=<your_google_api_key>
-python main.py -l gemini -e 100
+python main.py -l gemini -e 100 -p problem_set/100problems
 ```
 
 ### Testing Mode
@@ -70,7 +71,7 @@ Run only the first 2 problems for testing:
 ```bash
 cd src/llm_bo_ability_eval
 export OPENAI_API_KEY=<your_google_api_key>
-python main.py -l gemini -e 100 -m 2
+python main.py -l gemini -e 100 -m 2 -p problem_set/100problems
 ```
 
 ### Command Line Arguments
