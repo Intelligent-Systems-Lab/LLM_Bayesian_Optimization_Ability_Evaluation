@@ -1,0 +1,184 @@
+# HPO Search Space Configuration
+# Suggest user to update this file with Morph repo's latest version if needed.
+
+HPO_keys:
+  - optimizer
+  - learning_rate
+  - epochs
+  - batch_size
+  - momentum
+  - weight_decay
+  # - hidden_size
+  # - num_layers
+  # - embedding_dim
+  # - seq_len
+
+search_space:
+  # # Model architecture selection
+  # architecture:
+  #   choices: ["resnet18", "resnet34", "simple_cnn", "lenet5"]  # Architectures to optimize over
+
+  # # FL aggregation strategy selection
+  # aggregation:
+  #   choices: ["fedavg", "fedprox", "fedadam"]  # FL strategies to optimize over
+  
+  # Training hyperparameters
+  optimizer:
+    choices: ["sgd", "adam", "adamw", "rmsprop"]
+
+  # Optimizer-specific learning rate ranges
+  learning_rate_sgd:
+    min: 0.001
+    max: 0.3
+    log: true
+    condition: "optimizer == 'sgd'"
+
+  learning_rate_adam:
+    min: 0.00001
+    max: 0.01
+    log: true
+    condition: "optimizer == 'adam'"
+
+  learning_rate_adamw:
+    min: 0.000001
+    max: 0.01
+    log: true
+    condition: "optimizer == 'adamw'"
+
+  learning_rate_rmsprop:
+    min: 0.0001
+    max: 0.01
+    log: true
+    condition: "optimizer == 'rmsprop'"
+
+  momentum:
+    min: 0.8
+    max: 0.99
+    condition: "optimizer == 'sgd'"  # Only for SGD
+    allow_zero: true
+  
+  # Optimizer-specific weight decay ranges
+  weight_decay_sgd:
+    min: 0.0001
+    max: 0.01
+    log: true
+    condition: "optimizer == 'sgd'"
+    allow_zero: true
+
+  weight_decay_others:
+    min: 0.000001
+    max: 0.01
+    log: true
+    condition: "optimizer in ['adam', 'adamw', 'rmsprop']"
+    allow_zero: true
+  
+  epochs:
+    min: 1
+    max: 1
+  
+  batch_size:
+    choices: [16, 32, 64, 128] # lstm use [16, 32, 64]
+  
+  # # Scheduler parameters
+  # use_scheduler:
+  #   choices: [true, false]
+  
+  # scheduler_type:
+  #   choices: ["step", "exponential", "cosine"]
+  #   condition: "use_scheduler == true"
+  
+  # step_size:
+  #   min: 5
+  #   max: 20
+  #   condition: "scheduler_type == 'step'"
+  
+  # gamma:
+  #   min: 0.1
+  #   max: 0.9
+  #   condition: "scheduler_type in ['step', 'exponential']"
+  
+  # Architecture-specific hyperparameters
+  # # SimpleCNN parameters
+  # conv1_channels:
+  #   choices: [6, 8, 12, 16]
+  #   condition: "architecture == 'simple_cnn'"
+  
+  # conv2_channels:
+  #   choices: [12, 16, 24, 32]
+  #   condition: "architecture == 'simple_cnn'"
+  
+  # fc1_units:
+  #   choices: [84, 120, 168, 240]
+  #   condition: "architecture == 'simple_cnn'"
+  
+  # fc2_units:
+  #   choices: [64, 84, 120, 168]
+  #   condition: "architecture == 'simple_cnn'"
+  
+  # ResNet parameters
+  pretrained:
+    choices: [true, false]
+    condition: "architecture in ['resnet18', 'resnet34', 'resnet50']"
+  
+  # MLP parameters
+  hidden_sizes:
+    choices: [[256], [512], [256, 128], [512, 256], [512, 256, 128]]
+    condition: "architecture == 'mlp'"
+  
+  # LSTM parameters
+  embedding_dim:
+    choices: [64, 128, 256]
+    condition: "architecture == 'lstm'"
+  
+  hidden_size:
+    choices: [128, 256, 512]
+    condition: "architecture == 'lstm'"
+  
+  num_layers:
+    min: 1
+    max: 4
+    condition: "architecture == 'lstm'"
+
+  seq_len:
+    min: 30
+    max: 200
+    condition: "architecture == 'lstm'"
+
+  bidirectional:
+    choices: [true, false]
+    condition: "architecture == 'lstm'"
+  
+  # Common parameters
+  dropout_rate:
+    min: 0.0
+    max: 0.5
+  
+  # use_batch_norm:
+  #   choices: [true, false]
+  #   # condition: "architecture in ['simple_cnn', 'mlp']"
+  #   condition: "architecture in ['mlp']"
+
+  # # FL Strategy hyperparameters
+  # # FedProx parameters
+  # fedprox_mu:
+  #   min: 0.001
+  #   max: 1.0
+  #   log: true
+  #   condition: "aggregation == 'fedprox'"
+
+  # # FedAdam/FedYogi parameters
+  # fed_eta:
+  #   min: 0.001
+  #   max: 1.0
+  #   log: true
+  #   condition: "aggregation in ['fedadam', 'fedyogi', 'fedadagrad']"
+
+  # fed_beta_1:
+  #   min: 0.9
+  #   max: 0.99
+  #   condition: "aggregation in ['fedadam', 'fedyogi']"
+
+  # fed_beta_2:
+  #   min: 0.99
+  #   max: 0.999
+  #   condition: "aggregation in ['fedadam', 'fedyogi']"
