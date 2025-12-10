@@ -1,6 +1,6 @@
 from llm_configs import LLM_MAPPING
 from llm_tester import LLMTester
-from openai import OpenAI
+from openai import OpenAI, NOT_GIVEN
 
 def simple_query_by_LLMTester(prompt: str, system_prompt: str = None, llm_name: str = "gemini"):
     """
@@ -60,5 +60,6 @@ def simple_query(prompt: str, system_prompt: str = None, llm_name: str = "gemini
         ],
         # max_tokens=llm_config.get('max_tokens', 5000),
         temperature=llm_config.get('temperature', 0.4),
+        seed=llm_config.get('cache_seed', NOT_GIVEN),
     )
     return response

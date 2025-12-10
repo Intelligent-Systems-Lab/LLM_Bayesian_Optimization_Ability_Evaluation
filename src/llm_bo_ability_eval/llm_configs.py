@@ -21,6 +21,7 @@ GEMINI_LLM_CONFIG = {
     "model": "gemini-2.5-pro",
     "base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",
     "api_key": os.environ.get('OPENAI_API_KEY', None),
+    "cache_seed": 202517059,
 }
 
 CLAUDE_LLM_CONFIG = {
@@ -56,8 +57,19 @@ KIMI_LLM_CONFIG = {
     "api_key": os.environ['OPENAI_API_KEY'], # remember to preset api key in environment variable GEMINI_API_KEY
 }
 
+OPENAI_LLM_CONFIG_REASONING = {
+    "model": "openai/gpt-oss-120b",
+    # "model": "openai/gpt-oss-20b:free",
+    "temperature": 0.3,
+    "max_tokens": 1800,
+    "cache_seed": 202517059,
+    "base_url": "https://openrouter.ai/api/v1",
+    "api_key": os.environ['OPENAI_API_KEY'], # remember to preset api key in environment variable GEMINI_API_KEY
+    "timeout": 6000,
+}
+
 LLM_MAPPING = {
-    "gpt-r": OPENAI_REASONING_LLM_CONFIG_REASONING,
+    "gpt-r": OPENAI_LLM_CONFIG_REASONING,
     "gemini": GEMINI_LLM_CONFIG,
     "claude": CLAUDE_LLM_CONFIG,
     "deepseek": DEEPSEEKR1_LLM_CONFIG,
